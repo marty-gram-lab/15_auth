@@ -11,12 +11,15 @@ describe('15_auth routes', () => {
   it('should sign up a user via POST', async() => {
     return request(app)
       .post('/api/v1/auth/signup')
-      .send({ email: 'myemail@email.com', password: 'password' })
+      .send({ email: 'myemail@email.com', password: 'password', profilePhotoURL: 'myphotourl.com' })
       .then(res => {
         expect(res.body).toEqual({
           id: expect.any(String),
-          email: 'myemail@email.com'
+          email: 'myemail@email.com',
+          passwordHash: expect.any(String),
+          profilePhotoURL: 'myphotourl.com'
         });
       });
+
   });
 });
