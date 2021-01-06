@@ -5,10 +5,10 @@ const app = require('../lib/app');
 
 describe('15_auth routes', () => {
   beforeEach(() => {
-    return pool.query(fs.readFileSync('./sql/setup.sql', 'utf-8'))
+    return pool.query(fs.readFileSync('./sql/setup.sql', 'utf-8'));
   });
 
-  it('should sign up a user via POST', () => {
+  it('should sign up a user via POST', async() => {
     return request(app)
       .post('/api/v1/auth/signup')
       .send({ email: 'myemail@email.com', password: 'password' })
