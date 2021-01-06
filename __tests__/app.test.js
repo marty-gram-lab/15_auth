@@ -7,4 +7,16 @@ describe('15_auth routes', () => {
   beforeEach(() => {
     return pool.query(fs.readFileSync('./sql/setup.sql', 'utf-8'))
   });
+
+  it('should sign up a user via POST', () => {
+    return request(app)
+      .post('/api/v1/auth/signup')
+      .send({ email: 'myemail@email.com', password: 'password' })
+      .then(res => {
+        expect(res.body).toEqual({
+          id: expect.any(String),
+          email: 'myemail@email.com'
+        });
+      });
+  });
 });
