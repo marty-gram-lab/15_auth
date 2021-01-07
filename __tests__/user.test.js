@@ -4,12 +4,12 @@ const request = require("supertest");
 const app = require("../lib/app");
 const UserService = require("../lib/services/UserService");
 
-describe("15_auth routes", () => {
+describe("User Routes", () => {
   beforeEach(() => {
     return pool.query(fs.readFileSync("./sql/setup.sql", "utf-8"));
   });
 
-  it("should sign up a user via POST", async () => {
+  it("should sign up a user via POST", async() => {
     return request(app)
       .post("/api/v1/auth/signup")
       .send({
@@ -26,7 +26,7 @@ describe("15_auth routes", () => {
       });
   });
 
-  it("lets a user login", async () => {
+  it("lets a user login", async() => {
     const user = await UserService.create({
       email: "myemail@email.com",
       password: "password",
@@ -46,7 +46,7 @@ describe("15_auth routes", () => {
     });
   });
 
-  it("it should verify whether or not a user is logged in", async () => {
+  it("it should verify whether or not a user is logged in", async() => {
     const agent = request.agent(app);
 
     const user = await UserService.create({
@@ -67,36 +67,6 @@ describe("15_auth routes", () => {
       email: "myemail@email.com",
       profilePhotoURL: "myphotourl.com",
     });
-  });
-
-  it("it should POST a post", async() => {
-    const agent = request.agent(app);
-
-    const user = await UserService.create({
-      email: "myemail@email.com",
-      password: "password",
-      profilePhotoURL: "myphotourl.com",
-    });
-
-    await agent.post("/api/v1/auth/login").send({
-      email: "myemail@email.com",
-      password: "password",
-    });
-
-    const res = await request(app).post("/api/v1/posts").send({
-      user_id: user.id,
-      photo_url: "myNewPostPic.com",
-      caption: "Here is my cool photo",
-      tags: ["#cool", "#photo"]
-    });
-
-    expect(res.body).toEqual({
-      user_id: user.id,
-      photo_url: "myNewPostPic.com",
-      caption: "Here is my cool photo",
-      tags: ["#cool", "#photo"]
-    });
-
   });
 
 });
