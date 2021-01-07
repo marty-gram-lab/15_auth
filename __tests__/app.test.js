@@ -32,13 +32,15 @@ describe('15_auth routes', () => {
     const res = await request(app)
       .post('/api/v1/auth/login')
       .send({
-        email: 'test@test.com',
-        password: 'password'
+        email: 'myemail@email.com', 
+        password: 'password', 
+        profilePhotoURL: 'myphotourl.com'
       });
 
     expect(res.body).toEqual({
       id: user.id,
-      email: 'password'
+      email: 'myemail@email.com',
+      profilePhotoURL: 'myphotourl.com'
     });
   });
 });
