@@ -10,7 +10,7 @@ describe("Post Routes", () => {
 
   let agent, user;
 
-  beforeEach( async() => {
+  beforeEach(async() => {
     agent = request.agent(app);
 
     user = await agent
@@ -22,8 +22,7 @@ describe("Post Routes", () => {
       });
   });
 
-  it("it should insert a post via POST", async() => {
-
+  it("should insert a post via POST", async() => {
     const res = await agent
       .post("/api/v1/posts")
       .send({
@@ -40,7 +39,27 @@ describe("Post Routes", () => {
       caption: "Here is my cool photo"
     //   tags: ["#cool", "#photo"]
     });
+  });
 
+  it("should DELETE a post by id", async() => {
+    const { body: post } = await agent
+      .post("/api/v1/posts")
+      .send({
+        // userId: user.body.id,
+        photoUrl: "myNewPostPic.com",
+        caption: "Here is my cool photo"
+        // tags: ["#cool", "#photo"]
+      });
+
+    const res = await agent
+      .delete(`/api/v1/posts/${post.id}`);
+
+    expect(res.body).toEqual({
+      id: expect.any(String),
+      userId: user.body.id,
+      photoUrl: "myNewPostPic.com",
+      caption: "Here is my cool photo"
+    });
   });
 
 });
