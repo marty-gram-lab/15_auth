@@ -89,4 +89,26 @@ describe("Post Routes", () => {
       userId: expect.any(String)
     });
   });
+
+  it("should PATCH an existing post", async() => {
+    const { body: post } = await agent
+      .post("/api/v1/posts")
+      .send({
+        photoUrl: "myNewPostPic.com",
+        caption: "Here is my cool photo"
+      });
+
+    const updatedCaption = "cool newwww captiom";
+
+    const res = await agent
+      .patch(`/api/v1/posts/${post.id}`)
+      .send(updatedCaption);
+
+    expect(res.body).toEqual({
+      id: post.id,
+      photoUrl: "myNewPostPic.com",
+      caption: "cool newwww captiom",
+      userId: expect.any(String)
+    });
+  });
 });
