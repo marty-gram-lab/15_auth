@@ -68,4 +68,35 @@ describe("15_auth routes", () => {
       profilePhotoURL: "myphotourl.com",
     });
   });
+
+  it("it should POST a post", async() => {
+    const agent = request.agent(app);
+
+    const user = await UserService.create({
+      email: "myemail@email.com",
+      password: "password",
+      profilePhotoURL: "myphotourl.com",
+    });
+
+    await agent.post("/api/v1/auth/login").send({
+      email: "myemail@email.com",
+      password: "password",
+    });
+
+    const res = await request(app).post("/api/v1/posts").send({
+      user_id: user.id,
+      photo_url: "myNewPostPic.com",
+      caption: "Here is my cool photo",
+      tags: ["#cool", "#photo"]
+    });
+
+    expect(res.body).toEqual({
+      user_id: user.id,
+      photo_url: "myNewPostPic.com",
+      caption: "Here is my cool photo",
+      tags: "#cool"
+    });
+
+  });
+
 });
