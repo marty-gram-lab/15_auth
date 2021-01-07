@@ -26,10 +26,8 @@ describe("Post Routes", () => {
     const res = await agent
       .post("/api/v1/posts")
       .send({
-        // userId: user.body.id,
         photoUrl: "myNewPostPic.com",
         caption: "Here is my cool photo"
-        // tags: ["#cool", "#photo"]
       });
 
     expect(res.body).toEqual({
@@ -37,7 +35,6 @@ describe("Post Routes", () => {
       userId: user.body.id,
       photoUrl: "myNewPostPic.com",
       caption: "Here is my cool photo"
-    //   tags: ["#cool", "#photo"]
     });
   });
 
@@ -45,10 +42,8 @@ describe("Post Routes", () => {
     const { body: post } = await agent
       .post("/api/v1/posts")
       .send({
-        // userId: user.body.id,
         photoUrl: "myNewPostPic.com",
         caption: "Here is my cool photo"
-        // tags: ["#cool", "#photo"]
       });
 
     const res = await agent
@@ -62,4 +57,16 @@ describe("Post Routes", () => {
     });
   });
 
+  it("should GET some posts", async() => {
+    const posts = await Promise.all([
+      agent.post("/api/v1/posts").send({ photoUrl: "coolpic1.com" }),
+      agent.post("/api/v1/posts").send({ photoUrl: "coolpic2.com" }),
+      agent.post("/api/v1/posts").send({ photoUrl: "coolpic3.com" }),
+      agent.post("/api/v1/posts").send({ photoUrl: "coolpic4.com" })
+    ]).then(posts => posts.map(post => post.body));
+
+    const res = await agent.get("/api/v1/posts");
+
+    expect(res.body).toEqual(posts);
+  });
 });
