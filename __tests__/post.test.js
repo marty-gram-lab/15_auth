@@ -69,4 +69,23 @@ describe("Post Routes", () => {
 
     expect(res.body).toEqual(posts);
   });
+
+  it("should GET a post by id", async() => {
+    const { body: post } = await agent
+      .post("/api/v1/posts")
+      .send({
+        photoUrl: "myNewPostPic.com",
+        caption: "Here is my cool photo"
+      });
+
+    const res = await agent
+      .get(`/api/v1/posts/${post.id}`);
+
+    expect(res.body).toEqual({
+      id: post.id,
+      photoUrl: "myNewPostPic.com",
+      caption: "Here is my cool photo",
+      userId: expect.any(String)
+    });
+  });
 });
