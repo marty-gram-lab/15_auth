@@ -94,7 +94,7 @@ describe("15_auth routes", () => {
       user_id: user.id,
       photo_url: "myNewPostPic.com",
       caption: "Here is my cool photo",
-      tags: "#cool"
+      tags: ["#cool", "#photo"]
     });
 
   });
