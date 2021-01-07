@@ -67,7 +67,8 @@ describe("Post Routes", () => {
 
     const res = await agent.get("/api/v1/posts");
 
-    expect(res.body).toEqual(posts);
+    expect(res.body).toEqual(expect.arrayContaining(posts));
+    expect(res.body.length).toEqual(posts.length);
   });
 
   it("should GET a post by id", async() => {
