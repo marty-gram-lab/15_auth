@@ -98,7 +98,7 @@ describe("Post Routes", () => {
         caption: "Here is my cool photo"
       });
 
-    const updatedCaption = "cool newwww captiom";
+    const updatedCaption = { caption: "cool newwww captiom" };
 
     const res = await agent
       .patch(`/api/v1/posts/${post.id}`)
