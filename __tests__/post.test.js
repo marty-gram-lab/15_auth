@@ -10,13 +10,13 @@ describe("Post Routes", () => {
 
   let agent, user;
 
-  beforeEach(async () => {
+  beforeEach(async() => {
     agent = request.agent(app);
 
     user = await agent.post("/api/v1/auth/signup").send({
       email: "myemail@email.com",
       password: "password",
-      profilePhotoURL: "myphotourl.com",
+      profilePhotoURL: "myphotourl.com"
     });
   });
 
@@ -24,7 +24,7 @@ describe("Post Routes", () => {
     const res = await agent.post("/api/v1/posts").send({
       photoUrl: "myNewPostPic.com",
       caption: "Here is my cool photo",
-      tags: ["#tag1", "#tag2"],
+      tags: ["#tag1", "#tag2"]
     });
 
     expect(res.body).toEqual({
