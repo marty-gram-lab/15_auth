@@ -2,6 +2,7 @@ const fs = require("fs");
 const pool = require("../lib/utils/pool");
 const request = require("supertest");
 const app = require("../lib/app");
+const postPopular = require("./postPopular");
 
 describe("Post Routes", () => {
   beforeEach(() => {
@@ -107,4 +108,23 @@ describe("Post Routes", () => {
       userId: expect.any(String),
     });
   });
+
+
+  it("should return the top ten posts with get", async() => {
+    const array = [];
+
+    for(let i = 0; i < 20; i++){
+      array.push(i);
+    }
+    const posts = await Promise.all(
+      array.map(item => agent.post("/api/v1/posts").send({ 
+        photoUrl:`coolpic${item}.com` })
+      )).then(posts => posts.map(post => post.body));
+console.log(posts);
+    const res = await agent.get("/api/v1/posts");
+
+    expect(res.body).toEqual(expect.arrayContaining(posts));
+    expect(res.body.length).toEqual(posts.length);
+  });
 });
+
