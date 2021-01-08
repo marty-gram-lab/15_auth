@@ -2,7 +2,7 @@ const fs = require("fs");
 const pool = require("../lib/utils/pool");
 const request = require("supertest");
 const app = require("../lib/app");
-const postPopular = require("./postPopular");
+const postPopular = require("./comments");
 
 describe("Post Routes", () => {
   beforeEach(() => {
@@ -110,7 +110,7 @@ describe("Post Routes", () => {
   });
 
 
-  it("should return the top ten posts with get", async() => {
+  it.only("should return the top ten posts with get", async() => {
     const array = [];
 
     for(let i = 0; i < 20; i++){
@@ -120,7 +120,28 @@ describe("Post Routes", () => {
       array.map(item => agent.post("/api/v1/posts").send({ 
         photoUrl:`coolpic${item}.com` })
       )).then(posts => posts.map(post => post.body));
-console.log(posts);
+    
+    // console.log('Posts', posts);
+
+        postPopular(agent);
+    // const commented = await Promise.all(posts.map((post, index) => {
+    //   const commentsArray = [];
+        
+    //   for(let i = 0; i < index; i++){
+    //     commentsArray.push(i);
+    //   }
+
+    //   return Promise.all(
+    //     commentsArray.map(item => {
+    //       return agent.post("/api/v1/comments").send({ 
+    //         userId: user.body.id,
+    //         postId: post.id,
+    //         comment: `This is comment #${item}.`
+    //       });
+    //     }
+    //     ));
+    // }));
+        
     const res = await agent.get("/api/v1/posts");
 
     expect(res.body).toEqual(expect.arrayContaining(posts));
