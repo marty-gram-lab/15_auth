@@ -32,17 +32,16 @@ describe("Comment Routes", () => {
       password: "12345",
       profilePhotoURL: "something.com"
     });
-
     const res = await agent.post("/api/v1/comments").send({
       userId: newUser.id,
-      postId: 1,
+      postId: post.body.id,
       comment: "Rainbows and love y'all"
     });
     
     expect(res.body).toEqual({
       id: expect.any(String),
       userId: newUser.id,
-      postId: "1",
+      postId: post.body.id,
       comment: "Rainbows and love y'all"
     });
   });
