@@ -10,60 +10,57 @@ describe("Post Routes", () => {
 
   let agent, user;
 
-  beforeEach(async() => {
+  beforeEach(async () => {
     agent = request.agent(app);
 
-    user = await agent
-      .post("/api/v1/auth/signup")
-      .send({
-        email: "myemail@email.com",
-        password: "password",
-        profilePhotoURL: "myphotourl.com"
-      });
+    user = await agent.post("/api/v1/auth/signup").send({
+      email: "myemail@email.com",
+      password: "password",
+      profilePhotoURL: "myphotourl.com",
+    });
   });
 
-  it("should insert a post via POST", async() => {
-    const res = await agent
-      .post("/api/v1/posts")
-      .send({
-        photoUrl: "myNewPostPic.com",
-        caption: "Here is my cool photo"
-      });
+  it("should insert a post via POST", async () => {
+    const res = await agent.post("/api/v1/posts").send({
+      photoUrl: "myNewPostPic.com",
+      caption: "Here is my cool photo",
+      tags: ["#tag1", "#tag2"],
+    });
 
     expect(res.body).toEqual({
       id: expect.any(String),
       userId: user.body.id,
       photoUrl: "myNewPostPic.com",
-      caption: "Here is my cool photo"
+      caption: "Here is my cool photo",
+      tags: ["#tag1", "#tag2"],
     });
   });
 
-  it("should DELETE a post by id", async() => {
-    const { body: post } = await agent
-      .post("/api/v1/posts")
-      .send({
-        photoUrl: "myNewPostPic.com",
-        caption: "Here is my cool photo"
-      });
+  it("should DELETE a post by id", async () => {
+    const { body: post } = await agent.post("/api/v1/posts").send({
+      photoUrl: "myNewPostPic.com",
+      caption: "Here is my cool photo",
+      tags: ["#tag1", "#tag2"],
+    });
 
-    const res = await agent
-      .delete(`/api/v1/posts/${post.id}`);
+    const res = await agent.delete(`/api/v1/posts/${post.id}`);
 
     expect(res.body).toEqual({
       id: expect.any(String),
       userId: user.body.id,
       photoUrl: "myNewPostPic.com",
-      caption: "Here is my cool photo"
+      caption: "Here is my cool photo",
+      tags: ["#tag1", "#tag2"],
     });
   });
 
-  it("should GET some posts", async() => {
+  it("should GET some posts", async () => {
     const posts = await Promise.all([
       agent.post("/api/v1/posts").send({ photoUrl: "coolpic1.com" }),
       agent.post("/api/v1/posts").send({ photoUrl: "coolpic2.com" }),
       agent.post("/api/v1/posts").send({ photoUrl: "coolpic3.com" }),
-      agent.post("/api/v1/posts").send({ photoUrl: "coolpic4.com" })
-    ]).then(posts => posts.map(post => post.body));
+      agent.post("/api/v1/posts").send({ photoUrl: "coolpic4.com" }),
+    ]).then((posts) => posts.map((post) => post.body));
 
     const res = await agent.get("/api/v1/posts");
 
@@ -71,32 +68,30 @@ describe("Post Routes", () => {
     expect(res.body.length).toEqual(posts.length);
   });
 
-  it("should GET a post by id", async() => {
-    const { body: post } = await agent
-      .post("/api/v1/posts")
-      .send({
-        photoUrl: "myNewPostPic.com",
-        caption: "Here is my cool photo"
-      });
+  it("should GET a post by id", async () => {
+    const { body: post } = await agent.post("/api/v1/posts").send({
+      photoUrl: "myNewPostPic.com",
+      caption: "Here is my cool photo",
+      tags: ["#tag1", "#tag2"],
+    });
 
-    const res = await agent
-      .get(`/api/v1/posts/${post.id}`);
+    const res = await agent.get(`/api/v1/posts/${post.id}`);
 
     expect(res.body).toEqual({
       id: post.id,
       photoUrl: "myNewPostPic.com",
       caption: "Here is my cool photo",
-      userId: expect.any(String)
+      tags: ["#tag1", "#tag2"],
+      userId: expect.any(String),
     });
   });
 
-  it("should PATCH an existing post", async() => {
-    const { body: post } = await agent
-      .post("/api/v1/posts")
-      .send({
-        photoUrl: "myNewPostPic.com",
-        caption: "Here is my cool photo"
-      });
+  it("should PATCH an existing post", async () => {
+    const { body: post } = await agent.post("/api/v1/posts").send({
+      photoUrl: "myNewPostPic.com",
+      caption: "Here is my cool photo",
+      tags: ["#tag1", "#tag2"],
+    });
 
     const updatedCaption = { caption: "cool newwww captiom" };
 
@@ -108,7 +103,8 @@ describe("Post Routes", () => {
       id: post.id,
       photoUrl: "myNewPostPic.com",
       caption: "cool newwww captiom",
-      userId: expect.any(String)
+      tags: ["#tag1", "#tag2"],
+      userId: expect.any(String),
     });
   });
 });

@@ -9,7 +9,7 @@ describe("User Routes", () => {
     return pool.query(fs.readFileSync("./sql/setup.sql", "utf-8"));
   });
 
-  it("should sign up a user via POST", async() => {
+  it("should sign up a user via POST", async () => {
     return request(app)
       .post("/api/v1/auth/signup")
       .send({
@@ -26,7 +26,7 @@ describe("User Routes", () => {
       });
   });
 
-  it("lets a user login", async() => {
+  it("lets a user login", async () => {
     const user = await UserService.create({
       email: "myemail@email.com",
       password: "password",
@@ -46,7 +46,7 @@ describe("User Routes", () => {
     });
   });
 
-  it("it should verify whether or not a user is logged in", async() => {
+  it("it should verify whether or not a user is logged in", async () => {
     const agent = request.agent(app);
 
     const user = await UserService.create({
@@ -68,5 +68,4 @@ describe("User Routes", () => {
       profilePhotoURL: "myphotourl.com",
     });
   });
-
 });
