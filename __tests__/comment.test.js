@@ -46,4 +46,20 @@ describe("Comment Routes", () => {
     });
   });
 
+  it("uses delete to delete a comment", async() => {
+    const { body: comment } = await agent.post("/api/v1/comments").send({
+      userId: user.body.id,
+      postId: post.body.id,
+      comment: "Rainbows and love y'all"
+    });
+
+    const res = await agent.delete(`/api/v1/comments/${comment.id}`);
+
+    expect(res.body).toEqual({
+      id: expect.any(String),
+      userId: user.body.id,
+      postId: post.body.id,
+      comment: "Rainbows and love y'all"
+    });
+  });
 });
