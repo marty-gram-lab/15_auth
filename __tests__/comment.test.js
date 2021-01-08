@@ -27,7 +27,7 @@ describe("Comment Routes", () => {
 
 
   it("post a new comment", async() => {
-    const newUser = await agent.post("/api/v1/auth/signup").send({
+    const { body: newUser } = await agent.post("/api/v1/auth/signup").send({
       email: "newnew@user.com",
       password: "12345",
       profilePhotoURL: "something.com"
@@ -42,7 +42,7 @@ describe("Comment Routes", () => {
     expect(res.body).toEqual({
       id: expect.any(String),
       userId: newUser.id,
-      postId: 1,
+      postId: "1",
       comment: "Rainbows and love y'all"
     });
   });
