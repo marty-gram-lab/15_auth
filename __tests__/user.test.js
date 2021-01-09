@@ -4,7 +4,7 @@ const request = require("supertest");
 const app = require("../lib/app");
 const UserService = require("../lib/services/UserService");
 
-describe("15_auth routes", () => {
+describe("User Routes", () => {
   beforeEach(() => {
     return pool.query(fs.readFileSync("./sql/setup.sql", "utf-8"));
   });
