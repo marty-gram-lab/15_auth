@@ -83,6 +83,7 @@ describe("Post Routes", () => {
       caption: "Here is my cool photo",
       tags: ["#tag1", "#tag2"],
       userId: expect.any(String),
+      comments: [null]
     });
   });
 
@@ -136,6 +137,10 @@ describe("Post Routes", () => {
       agent.post("/api/v1/comments").send({ userId: user.body.id, postId: posts[2].id, comment: "3.3" })
     ]).then(comments => comments.map(com => com.body));
 
+    const res = await agent
+      .get("/api/v1/posts/popular");
+
+    console.log(res.body);
 
   });
 });
