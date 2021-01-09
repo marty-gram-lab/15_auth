@@ -2,10 +2,6 @@ const fs = require("fs");
 const pool = require("../lib/utils/pool");
 const request = require("supertest");
 const app = require("../lib/app");
-<<<<<<< HEAD
-=======
-const postPopular = require("./comments");
->>>>>>> a8d3036c02358da569283351fc4b07d2bea93914
 
 describe("Post Routes", () => {
   beforeEach(() => {
@@ -144,8 +140,9 @@ describe("Post Routes", () => {
     const res = await agent
       .get("/api/v1/posts/popular");
 
-    console.log(res.body);
-
+    expect(res.body).toEqual({
+      
+    })
   });
 });
 
