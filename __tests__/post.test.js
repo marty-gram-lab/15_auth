@@ -2,6 +2,10 @@ const fs = require("fs");
 const pool = require("../lib/utils/pool");
 const request = require("supertest");
 const app = require("../lib/app");
+<<<<<<< HEAD
+=======
+const postPopular = require("./comments");
+>>>>>>> a8d3036c02358da569283351fc4b07d2bea93914
 
 describe("Post Routes", () => {
   beforeEach(() => {
@@ -110,7 +114,7 @@ describe("Post Routes", () => {
   });
 
 
-  it("should return the top ten posts with get", async() => {
+  it.only("should return the top ten posts with get", async() => {
     const array = [];
 
     for(let i = 0; i < 3; i++){
