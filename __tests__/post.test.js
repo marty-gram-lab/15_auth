@@ -110,7 +110,7 @@ describe("Post Routes", () => {
   });
 
 
-  it.only("should return the top ten posts with get", async() => {
+  it("should return the top ten posts with get", async() => {
     const array = [];
 
     for(let i = 0; i < 3; i++){
@@ -140,9 +140,35 @@ describe("Post Routes", () => {
     const res = await agent
       .get("/api/v1/posts/popular");
 
-    expect(res.body).toEqual({
-      
-    })
+    expect(res.body).toEqual([
+      {
+        id: expect.any(String),
+        caption: null,
+        tags: null,
+        userId: "1",
+        photoUrl: "coolpic2.com",
+        email: "myemail@email.com",
+        numberOfComments: "3"
+      },
+      {
+        id: expect.any(String),
+        caption: null,
+        tags: null,
+        userId: "1",
+        photoUrl: "coolpic1.com",
+        email: "myemail@email.com",
+        numberOfComments: "2"
+      },
+      {
+        id: expect.any(String),
+        caption: null,
+        tags: null,
+        userId: "1",
+        photoUrl: "coolpic0.com",
+        email: "myemail@email.com",
+        numberOfComments: "1"
+      }
+    ]);
   });
 });
 
