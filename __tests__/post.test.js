@@ -2,7 +2,6 @@ const fs = require("fs");
 const pool = require("../lib/utils/pool");
 const request = require("supertest");
 const app = require("../lib/app");
-const postPopular = require("./postPopular");
 
 describe("Post Routes", () => {
   beforeEach(() => {
@@ -113,18 +112,31 @@ describe("Post Routes", () => {
   it("should return the top ten posts with get", async() => {
     const array = [];
 
-    for(let i = 0; i < 20; i++){
+    for(let i = 0; i < 3; i++){
       array.push(i);
     }
+    
     const posts = await Promise.all(
       array.map(item => agent.post("/api/v1/posts").send({ 
         photoUrl:`coolpic${item}.com` })
       )).then(posts => posts.map(post => post.body));
-console.log(posts);
-    const res = await agent.get("/api/v1/posts");
 
-    expect(res.body).toEqual(expect.arrayContaining(posts));
-    expect(res.body.length).toEqual(posts.length);
+    const commentsGroupOne = await Promise.all([
+      agent.post("/api/v1/comments").send({ userId: user.body.id, postId: posts[0].id, comment: "1.1" })
+    ]).then(comments => comments.map(com => com.body));
+
+    const commentsGroupTwo = await Promise.all([
+      agent.post("/api/v1/comments").send({ userId: user.body.id, postId: posts[1].id, comment: "2.1" }),
+      agent.post("/api/v1/comments").send({ userId: user.body.id, postId: posts[1].id, comment: "2.2" })
+    ]).then(comments => comments.map(com => com.body));
+
+    const commentsGroupThree = await Promise.all([
+      agent.post("/api/v1/comments").send({ userId: user.body.id, postId: posts[2].id, comment: "3.1" }),
+      agent.post("/api/v1/comments").send({ userId: user.body.id, postId: posts[2].id, comment: "3.2" }),
+      agent.post("/api/v1/comments").send({ userId: user.body.id, postId: posts[2].id, comment: "3.3" })
+    ]).then(comments => comments.map(com => com.body));
+
+
   });
 });
 
