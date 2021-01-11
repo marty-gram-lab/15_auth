@@ -32,7 +32,7 @@ describe("Post Routes", () => {
       userId: user.body.id,
       photoUrl: "myNewPostPic.com",
       caption: "Here is my cool photo",
-      tags: ["#tag1", "#tag2"],
+      tags: ["#tag1", "#tag2"]
     });
   });
 
@@ -50,7 +50,7 @@ describe("Post Routes", () => {
       userId: user.body.id,
       photoUrl: "myNewPostPic.com",
       caption: "Here is my cool photo",
-      tags: ["#tag1", "#tag2"],
+      tags: ["#tag1", "#tag2"]
     });
   });
 
@@ -58,8 +58,7 @@ describe("Post Routes", () => {
     const posts = await Promise.all([
       agent.post("/api/v1/posts").send({ photoUrl: "coolpic1.com" }),
       agent.post("/api/v1/posts").send({ photoUrl: "coolpic2.com" }),
-      agent.post("/api/v1/posts").send({ photoUrl: "coolpic3.com" }),
-      agent.post("/api/v1/posts").send({ photoUrl: "coolpic4.com" }),
+      agent.post("/api/v1/posts").send({ photoUrl: "coolpic3.com" })
     ]).then((posts) => posts.map((post) => post.body));
 
     const res = await agent.get("/api/v1/posts");
@@ -75,6 +74,14 @@ describe("Post Routes", () => {
       tags: ["#tag1", "#tag2"],
     });
 
+    const numberOfComments = 2;
+
+    const comments = await Promise.all(
+      [...Array(numberOfComments)].map((_, i) => {
+        return agent.post("/api/v1/comments").send({ userId: user.body.id, postId: post.id, comment: `comment ${i}` });
+      })
+    ).then(comms => comms.map(comm => comm.body));
+
     const res = await agent.get(`/api/v1/posts/${post.id}`);
 
     expect(res.body).toEqual({
@@ -83,7 +90,7 @@ describe("Post Routes", () => {
       caption: "Here is my cool photo",
       tags: ["#tag1", "#tag2"],
       userId: expect.any(String),
-      comments: [null]
+      comments: expect.arrayContaining(comments)
     });
   });
 
@@ -105,7 +112,7 @@ describe("Post Routes", () => {
       photoUrl: "myNewPostPic.com",
       caption: "cool newwww captiom",
       tags: ["#tag1", "#tag2"],
-      userId: expect.any(String),
+      userId: expect.any(String)
     });
   });
 
