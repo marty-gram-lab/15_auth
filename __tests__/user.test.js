@@ -3,27 +3,46 @@ const pool = require("../lib/utils/pool");
 const request = require("supertest");
 const app = require("../lib/app");
 
+const User = require("../lib/models/User");
+const Post = require("../lib/models/Post");
+
 describe("Comment Routes", () => {
   beforeEach(() => {
     return pool.query(fs.readFileSync("./sql/setup.sql", "utf-8"));
   });
 
-  // let agent, user, post;
+  let agent, users, posts;
 
-  // beforeEach(async() => {
-  //   agent = request.agent(app);
+  beforeEach(async() => {
+    const numberOfUsers = 10;
 
-  //   user = await agent.post("/api/v1/auth/signup").send({
-  //     email: "myemail@email.com",
-  //     password: "password",
-  //     profilePhotoURL: "myphotourl.com"
-  //   });
+    agent = request.agent(app);
 
-  //   post = await agent.post("/api/v1/posts").send({
-  //     photoUrl: "myNewPostPic.com",
-  //     caption: "Here is my cool photo",
-  //     tags: ["#tag1", "#tag2"]
-  //   });
-  // });
+    users = await Promise.all([...Array(numberOfUsers)]
+      .map((_, i) => User.insert({ 
+        email: `usernumber${i}@test.com`,
+        passwordHash: `hash${i}`,
+        profilePhotoURL: `photo${i}.com`
+      }))
+    );
+
+    posts = await Promise.all(users.map(user => {
+      const numberOfPosts = [...Array(Number(user.id))];
+
+      return Promise.all(numberOfPosts
+        .map((_, i) => Post.insert({
+          userId: user.id,
+          photoUrl: `${user.id}-${i}`
+        }))
+      );
+    }));
+
+    
+
+  });
+
+  it("should get the 10 users with the most comments", async() => {
+
+  });
 
 });
