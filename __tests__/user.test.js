@@ -47,29 +47,13 @@ describe("Comment Routes", () => {
         });
       }));
     }));
-
-    console.log(comments);
-
-
-    // comments = await Promise.all(posts.map(post => {
-
-    //   const numberOfComments = [...Array(Number(post.id))];
-
-    //   return Promise.all(numberOfComments
-    //     .map((_, i) => Comment.insert({
-    //       postId: post.id,
-    //       comment: `${post.id}-${i}`,
-    //       userId: Math.floor(Math.random() * 10 + 1)
-    //     }))
-    //   );
-    // })); 
-
-    // console.log(comments);
-
   });
 
   it("should get the 10 users with the most comments", async() => {
+    const { body: popularUsers } = await agent
+      .get("/api/v1/users/popular");
 
+    expect(popularUsers.length).toEqual(10);
   });
 
 });
