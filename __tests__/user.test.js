@@ -2,70 +2,81 @@ const fs = require("fs");
 const pool = require("../lib/utils/pool");
 const request = require("supertest");
 const app = require("../lib/app");
-const UserService = require("../lib/services/UserService");
 
-describe("User Routes", () => {
+const User = require("../lib/models/User");
+const Post = require("../lib/models/Post");
+const Comment = require("../lib/models/Comment");
+
+describe("Comment Routes", () => {
   beforeEach(() => {
     return pool.query(fs.readFileSync("./sql/setup.sql", "utf-8"));
   });
 
-  it("should sign up a user via POST", async () => {
-    return request(app)
-      .post("/api/v1/auth/signup")
-      .send({
-        email: "myemail@email.com",
-        password: "password",
-        profilePhotoURL: "myphotourl.com",
-      })
-      .then((res) => {
-        expect(res.body).toEqual({
-          id: expect.any(String),
-          email: "myemail@email.com",
-          profilePhotoURL: "myphotourl.com",
+  let agent, users, posts, comments;
+
+  beforeEach(async() => {
+    const numberOfUsers = 10;
+
+    agent = request.agent(app);
+
+    users = await Promise.all([...Array(numberOfUsers)]
+      .map((_, i) => User.insert({ 
+        email: `usernumber${i}@test.com`,
+        passwordHash: `hash${i}`,
+        profilePhotoURL: `photo${i}.com`
+      }))
+    );
+
+    posts = await Promise.all(users.map(user => {
+      const numberOfPosts = [...Array(Number(user.id))];
+
+      return Promise.all(numberOfPosts
+        .map((_, i) => Post.insert({
+          userId: user.id,
+          photoUrl: `${user.id}-${i}`
+        }))
+      );
+    }));
+
+    comments = await Promise.all(posts.map(postList => {
+      return Promise.all(postList.map(post => {
+        return Comment.insert({
+          postId: post.id,
+          comment: `${post.userId}-${post.id}`,
+          userId: Math.floor(Math.random() * 10 + 1)
         });
-      });
+      }));
+    }));
   });
 
-  it("lets a user login", async () => {
-    const user = await UserService.create({
-      email: "myemail@email.com",
-      password: "password",
-      profilePhotoURL: "myphotourl.com",
-    });
+  it("should get the 10 users with the most comments on their posts", async() => {
+    const { body: popularUsers } = await agent
+      .get("/api/v1/users/popular");
 
-    const res = await request(app).post("/api/v1/auth/login").send({
-      email: "myemail@email.com",
-      password: "password",
-      profilePhotoURL: "myphotourl.com",
-    });
-
-    expect(res.body).toEqual({
-      id: user.id,
-      email: "myemail@email.com",
-      profilePhotoURL: "myphotourl.com",
-    });
+    expect(popularUsers.length).toEqual(10);
   });
 
-  it("it should verify whether or not a user is logged in", async () => {
-    const agent = request.agent(app);
+  it("should GET the 10 users with the most posts", async() => {
+    const { body: prolificUsers } = await agent
+      .get("/api/v1/users/prolific");
 
-    const user = await UserService.create({
-      email: "myemail@email.com",
-      password: "password",
-      profilePhotoURL: "myphotourl.com",
-    });
+    expect(prolificUsers.length).toEqual(10);
 
-    await agent.post("/api/v1/auth/login").send({
-      email: "myemail@email.com",
-      password: "password",
-    });
+  });
 
-    const res = await agent.get("/api/v1/auth/verify");
+  it("should GET the 10 users with the most comments", async() => {
+    const { body: leaderUsers } = await agent
+      .get("/api/v1/users/leader");
 
-    expect(res.body).toEqual({
-      id: user.id,
-      email: "myemail@email.com",
-      profilePhotoURL: "myphotourl.com",
-    });
+    expect(leaderUsers.length).toEqual(10);
+    
+  });
+
+  it("should GET the 10 users with the highest average comments per post", async() => {
+    const { body: impactUsers } = await agent
+      .get("/api/v1/users/impact");
+
+    expect(impactUsers.length).toEqual(10);
+    
   });
 });
