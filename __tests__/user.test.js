@@ -49,7 +49,7 @@ describe("Comment Routes", () => {
     }));
   });
 
-  it("should get the 10 users with the most comments", async() => {
+  it("should get the 10 users with the most comments on their posts", async() => {
     const { body: popularUsers } = await agent
       .get("/api/v1/users/popular");
 
@@ -64,11 +64,19 @@ describe("Comment Routes", () => {
 
   });
 
-  it("should GET the 10 users with the most posts", async() => {
+  it("should GET the 10 users with the most comments", async() => {
     const { body: leaderUsers } = await agent
       .get("/api/v1/users/leader");
 
     expect(leaderUsers.length).toEqual(10);
+    
+  });
+
+  it("should GET the 10 users with the highest average comments per post", async() => {
+    const { body: impactUsers } = await agent
+      .get("/api/v1/users/impact");
+
+    expect(impactUsers.length).toEqual(10);
     
   });
 });
