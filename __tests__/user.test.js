@@ -55,5 +55,4 @@ describe("Comment Routes", () => {
 
     expect(popularUsers.length).toEqual(10);
   });
-
 });
