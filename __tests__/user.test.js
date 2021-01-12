@@ -61,6 +61,14 @@ describe("Comment Routes", () => {
       .get("/api/v1/users/prolific");
 
     expect(prolificUsers.length).toEqual(10);
+
+  });
+
+  it("should GET the 10 users with the most posts", async() => {
+    const { body: leaderUsers } = await agent
+      .get("/api/v1/users/leader");
+
+    expect(leaderUsers.length).toEqual(10);
     
   });
 });
